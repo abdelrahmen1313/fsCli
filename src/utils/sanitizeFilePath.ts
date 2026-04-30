@@ -33,7 +33,7 @@ export function sanitizeFilePath(safeRoot: string = assetsDirPath, inputPath: Pa
 
         // Block null-byte tricks in plain and URL-encoded form.
         const decodedInput = decodeSafely(rawInput);
-        if (rawInput.includes("\0") || decodedInput.includes("%00") || decodedInput.includes('...')) {
+        if (rawInput.includes("\0") || decodedInput.includes("%00") || decodedInput.includes('..')) {
             return false;
         }
 

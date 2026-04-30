@@ -21,7 +21,7 @@ function printHelp() {
 
     `);
     console.log(`Usage:
-  node index.js <command> [options]
+  fsCli <command> [options]
 
 Commands:
   tree <path> [depth]             Print directory tree at <path> (default depth 5)

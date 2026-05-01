@@ -21,7 +21,13 @@ npm install
 npm run build
 ```
 
-2. link it to your terminal (from the project dir)
+2. make the built file executable (Linux/macOS)
+
+```shell
+chmod +x ./dist/index.js
+```
+
+3. link it to your terminal (from the project dir)
 
 ```shell
 npm link

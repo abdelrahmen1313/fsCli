@@ -43,7 +43,7 @@ fsCli
 ** EXAMPLES **
 
 ```shell
-fsCli serach ./ logs 
+fsCli search ./ logs 
 ```
 
 -> prints all files under ./ directory that have the prefix `logs`

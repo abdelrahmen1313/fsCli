@@ -1,10 +1,9 @@
 import type { PathLike } from "node:fs";
 import { createWriteStream, statSync } from "node:fs";
 import path from "node:path";
-const logsDirPath = 'PATH/TO/LOGS/DIR'
 
 
-export class Logger {
+class Logger {
 
     private basePath: PathLike // initial log file
     private maxSizeBytes: number = 1024 * 1024 // 1 mb
@@ -19,12 +18,13 @@ export class Logger {
         this.currentFilePath = this._getFileName();
         this.stream = this.__createWriteStream(this.currentFilePath);
 
+    
     }
 
     // Generate file name based on counter
     _getFileName() {
         if (this.counter === 0) {
-            return this.basePath; // e.g., log.log
+            return this.basePath;
         }
         const stringPath = this.basePath.toString();
         const ext = path.extname(stringPath);
@@ -35,6 +35,7 @@ export class Logger {
 
     // create new writeable stream
     __createWriteStream(filePath: PathLike) {
+        mkdirSync(path.dirname(filePath.toString()), { recursive: true });
         const stream = createWriteStream(filePath, { flags: 'a' });
         stream.on('error', (err) => {
             console.error(`Logger stream error: ${err.message}`);
@@ -65,10 +66,28 @@ export class Logger {
         this.stream = this.__createWriteStream(this.currentFilePath);
     }
 
-    // Write log entry
-    log(message: string) {
+    private __write(message: string) {
         const logEntry = `${new Date().toISOString()} - ${message}\n`;
         this.stream.write(logEntry, 'utf8', () => {
+            const size = this._getFileSize(this.currentFilePath);
+            if (size >= this.maxSizeBytes) {
+                this.__rotate();
+            }
+        });
+    }
+
+    // Write log entry
+    log(message: string) {
+        this.__write(message);
+    }
+
+    writeBatch(messages: string[]) {
+        if (messages.length === 0) {
+            return;
+        }
+
+        const chunk = messages.map((message) => `${message}\n`).join("");
+        this.stream.write(chunk, 'utf8', () => {
             const size = this._getFileSize(this.currentFilePath);
             if (size >= this.maxSizeBytes) {
                 this.__rotate();
